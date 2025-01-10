@@ -1,0 +1,16 @@
+basePath: /v1
+host: localhost:8080
+info:
+  contact:
+    name: Cloudsmith inc.
+  description: This is a sample server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: 0.0.1
+paths: {}
+schemes:
+- https
+swagger: "2.0"
