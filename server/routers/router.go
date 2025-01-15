@@ -1,6 +1,9 @@
 package v1
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -23,8 +26,14 @@ func StartService(authUsecase *usecase.AuthUsecase) {
 	authGroup.Use(authUsecase.AuthMiddleware)
 	authGroup.GET("/userInfo", authUsecase.UserInfo)
 
-	// Swagger endpoint
-	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
+	// 環境変数からベースURLを取得（設定されていない場合はデフォルト値）
+	baseURL := os.Getenv("BASE_URL")
+	if baseURL == "" {
+		baseURL = "http://localhost:8080" // デフォルトのローカルURL
+	}
+
+	swaggerURL := fmt.Sprintf("%s/swagger/doc.json", baseURL)
+	url := ginSwagger.URL(swaggerURL)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	// Listen and serve on defined address

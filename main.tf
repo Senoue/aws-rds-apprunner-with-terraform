@@ -29,6 +29,8 @@ variable "db_password" {
 
 variable "image_identifier_url" {}
 
+variable "base_url" {}
+
 # Terraform configuration
 terraform {
   required_version = "=1.9.7"
@@ -204,6 +206,7 @@ resource "aws_apprunner_service" "main" {
           DB_USER     = var.db_username
           DB_PASSWORD = var.db_password
           DB_PORT     = var.db_port
+          BASE_URL    = var.base_url
         }
       }
     }
