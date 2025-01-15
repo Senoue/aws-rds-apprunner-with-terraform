@@ -12,17 +12,17 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// @title Swagger Example API
-// @version 0.0.1
-// @description This is a sample server.
-// @termsOfService http://swagger.io/terms/
-// @contact.name Cloudsmith inc.
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host localhost:8080
-// @BasePath /v1
-// @schemes http
-// @schemes https
+//	@title			Swagger Example API
+//	@version		0.0.1
+//	@description	This is a sample server.
+//	@termsOfService	http://swagger.io/terms/
+//	@contact.name	Cloudsmith inc.
+//	@license.name	Apache 2.0
+//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
+//	@host			localhost:8080
+//	@BasePath		/v1
+//	@schemes		http
+//	@schemes		https
 
 func main() {
 	db := dbInit()

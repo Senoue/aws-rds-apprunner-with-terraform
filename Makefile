@@ -1,19 +1,25 @@
+# 変数定義
+REGION=us-west-2
+ACCOUNT_ID=<you_account_id>
+ECR_REPO=${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/example/app
+CMD_CONTAINER=cmd-container
+
 # コンテナ関連の操作
 build-image:
-	docker build --platform linux/amd64 -t 637423403983.dkr.ecr.us-west-2.amazonaws.com/example/app:latest .
+	docker build --platform linux/amd64 -t ${ECR_REPO}:latest .
 
 push-image:
-	docker push 637423403983.dkr.ecr.us-west-2.amazonaws.com/example/app:latest
+	docker push ${ECR_REPO}:latest
 
 auth-ecr:
-	aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 637423403983.dkr.ecr.us-west-2.amazonaws.com
+	aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
 
-# Swagger関連の操作
-generate-conteiner:
-	docker build -t cmd-container docker/cmd/.
+# command 関連の操作
+generate-container:
+	docker build -t ${CMD_CONTAINER} docker/cmd/.
 
 generate-swagger:
-	docker run --rm -v ./:/app cmd-container init -g ./main.go
+	docker run --rm -v ./:/app ${CMD_CONTAINER} init -g ./main.go
 
 go-fmt:
-	docker run --rm -v ./:/app cmd-container fmt
+	docker run --rm -v ./:/app ${CMD_CONTAINER} fmt
