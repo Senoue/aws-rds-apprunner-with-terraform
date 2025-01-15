@@ -38,7 +38,7 @@ func (r *authRepository) Login(c *gin.Context, email, password string) (*model.U
 // Register inserts a new user into the database.
 func (r *authRepository) Register(c *gin.Context, user *model.User) error {
 	query := "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)"
-	fmt.Println("query:", query)
+
 	result, err := r.db.ExecContext(c, query, user.Name, user.Email, user.Password)
 	if err != nil {
 		return fmt.Errorf("error inserting user: %w", err)
