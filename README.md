@@ -1,5 +1,3 @@
-Certainly! Here is the updated version of your `README.md`, including instructions to edit the `terraform.tfvars` file:
-
 # AWS RDS App Runner with Terraform
 
 This repository contains Terraform scripts to set up an AWS environment including RDS and App Runner. Follow the instructions below to deploy the infrastructure and get started with your application.
