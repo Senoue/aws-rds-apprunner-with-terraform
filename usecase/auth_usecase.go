@@ -49,19 +49,21 @@ func (a *AuthUsecase) Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Authentication successful",
-		"data": map[string]string{
-			"token":         tokenString,
-			"refresh_token": refreshTokenString,
-		},
-	})
+	res := struct {
+		Token        string `json:"token"`
+		RefreshToken string `json:"refresh_token"`
+	}{
+		Token:        tokenString,
+		RefreshToken: refreshTokenString,
+	}
+
+	c.JSON(http.StatusOK, res)
 }
 
 // Register creates a new user and returns JSON response.
 func (a *AuthUsecase) Register(c *gin.Context) {
 	var req struct {
-		Name     string `json:"name" binding:"required"`
+		Username string `json:"username" binding:"required"`
 		Email    string `json:"email" binding:"required"`
 		Password string `json:"password" binding:"required"`
 	}
@@ -72,7 +74,7 @@ func (a *AuthUsecase) Register(c *gin.Context) {
 	}
 
 	user := &model.User{
-		Name:     req.Name,
+		Username: req.Username,
 		Email:    req.Email,
 		Password: req.Password,
 	}
@@ -99,7 +101,17 @@ func (a *AuthUsecase) UserInfo(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	res := struct {
+		ID       int    `json:"id"`
+		Username string `json:"username"`
+		Email    string `json:"email"`
+	}{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+	}
+
+	c.JSON(http.StatusOK, res)
 }
 
 func (a *AuthUsecase) generateTokens(user *model.User) (string, string, error) {
@@ -119,7 +131,7 @@ func (a *AuthUsecase) generateTokens(user *model.User) (string, string, error) {
 func (a *AuthUsecase) createToken(user *model.User, duration time.Duration, secretKey string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":       user.ID,
-		"username": user.Name,
+		"username": user.Username,
 		"exp":      time.Now().Add(duration).Unix(),
 	})
 	return token.SignedString([]byte(secretKey))
@@ -151,8 +163,8 @@ func (a *AuthUsecase) getUserFromToken(c *gin.Context) (*model.User, error) {
 	}
 
 	user := &model.User{
-		ID:   int(claims["id"].(float64)),
-		Name: claims["username"].(string),
+		ID:       int(claims["id"].(float64)),
+		Username: claims["username"].(string),
 	}
 
 	return user, nil

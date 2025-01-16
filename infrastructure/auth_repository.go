@@ -24,7 +24,7 @@ func (r *authRepository) Login(c *gin.Context, email, password string) (*model.U
 	var user model.User
 
 	query := "SELECT id, username, email FROM users WHERE email = ? AND password_hash = ?"
-	err := r.db.QueryRowContext(c, query, email, password).Scan(&user.ID, &user.Name, &user.Email)
+	err := r.db.QueryRowContext(c, query, email, password).Scan(&user.ID, &user.Username, &user.Email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("user not found: %w", err)
@@ -39,7 +39,7 @@ func (r *authRepository) Login(c *gin.Context, email, password string) (*model.U
 func (r *authRepository) Register(c *gin.Context, user *model.User) error {
 	query := "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)"
 
-	result, err := r.db.ExecContext(c, query, user.Name, user.Email, user.Password)
+	result, err := r.db.ExecContext(c, query, user.Username, user.Email, user.Password)
 	if err != nil {
 		return fmt.Errorf("error inserting user: %w", err)
 	}
@@ -56,7 +56,7 @@ func (r *authRepository) Register(c *gin.Context, user *model.User) error {
 func (r *authRepository) UserInfo(c *gin.Context, id int) (*model.User, error) {
 	var user model.User
 	query := "SELECT id, username, email FROM users WHERE id = ?"
-	err := r.db.QueryRowContext(c, query, id).Scan(&user.ID, &user.Name, &user.Email)
+	err := r.db.QueryRowContext(c, query, id).Scan(&user.ID, &user.Username, &user.Email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("user not found: %w", err)

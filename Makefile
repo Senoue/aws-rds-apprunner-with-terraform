@@ -1,8 +1,6 @@
 # 変数定義
-REGION=us-west-2
-ACCOUNT_ID=<you_account_id>
-ECR_REPO=${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/example/app
-CMD_CONTAINER=cmd-container
+include .env.development
+export $(shell sed 's/=.*//' .env)
 
 # コンテナ関連の操作
 build-image:
@@ -19,7 +17,15 @@ generate-container:
 	docker build -t ${CMD_CONTAINER} docker/cmd/.
 
 generate-swagger:
-	docker run --rm -v ./:/app ${CMD_CONTAINER} init -g ./main.go
+	docker run --rm -v ./:/app ${MGT_CONTAINER} init -g ./main.go
 
-go-fmt:
-	docker run --rm -v ./:/app ${CMD_CONTAINER} fmt
+# migrate 関連の操作
+.PHONY: migrate-up migrate-down migrate-create
+migrate-create:
+	migrate create -ext sql -dir ./migrations -seq create_posts
+
+migrate-up:
+	migrate -path=./migrations -database "mysql://${DB_USER}:${DB_PASSWORD}@tcp(${DB_HOST}:${DB_PORT})/${DB_NAME}" up
+
+migrate-down:
+	migrate -path=./migrations -database "mysql://${DB_USER}:${DB_PASSWORD}@tcp(${DB_HOST}:${DB_PORT})/${DB_NAME}" down
