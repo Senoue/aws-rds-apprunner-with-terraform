@@ -9,6 +9,8 @@ variable "private_subnet_cidrs" {
   type = map(string)
 }
 
+variable "db" {}
+
 variable "db_name" {}
 
 variable "db_username" {}
@@ -101,7 +103,7 @@ resource "aws_db_instance" "rds" {
   engine                      = var.engine
   engine_version              = var.engine_version
   instance_class              = var.db_instance
-  identifier                  = var.db_name
+  identifier                  = var.db
   username                    = var.db_username
   password                    = var.db_password
   port                        = var.db_port

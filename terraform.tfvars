@@ -20,7 +20,8 @@ private_subnet_cidrs = {
 # RDS
 #--------------------------------------------------------------
 
-db_name        = "app-db"
+db             = "app-db"
+db_name        = "my_db"
 db_username    = "user"
 db_port        = "3306"
 engine         = "mysql"
